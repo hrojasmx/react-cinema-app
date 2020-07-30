@@ -61,7 +61,7 @@ jobs:
 
   deploy-to-aws-cloudfront:
     docker:
-      - image: circleci/node:12.16.1
+      - image: circleci/node:13.12.0
     working_directory: ~/repo
     steps:
       - checkout
@@ -72,6 +72,7 @@ jobs:
           name: Installing AWS CLI
           working_directory: /
           command: |
+            sudo apt-get -y -qq update
             sudo apt-get install -y awscli
             sudo apt-get install -y python-pip python-dev build-essential
       - run:
@@ -86,10 +87,10 @@ jobs:
           name: Deploy to AWS Cloudfront
           command: |
             aws configure set preview.cloudfront true
-            if [ "${CIRCLE_BRANCH}" == "master"]
+            if [ "${CIRCLE_BRANCH}" == "master" ]
             then
               aws cloudfront create-invalidation --distribution-id ${PRODUCTION_DISTRIBUTION_ID} --paths /\*
-            elif [ "${CIRCLE_BRANCH}" == "staging"]
+            elif [ "${CIRCLE_BRANCH}" == "staging" ]
             then
               aws cloudfront create-invalidation --distribution-id ${STAGING_DISTRIBUTION_ID} --paths /\*
             else
