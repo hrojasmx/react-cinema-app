@@ -70,11 +70,11 @@ jobs:
           command: echo ${CIRCLE_BRANCH}
       - run:
           name: Installing AWS CLI
-          working_directoty: /
+          working_directory: /
           command: |
             sudo apt-get -y -qq update
-            sudo-apt-get install -y awscli
-            sudo-apt-get install -y python-pip python-dev build-essential
+            sudo apt-get install -y awscli
+            sudo apt-get install -y python-pip python-dev build-essential
       - run:
           name: Build Project
           command: |
