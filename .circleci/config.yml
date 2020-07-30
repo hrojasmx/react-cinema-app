@@ -33,11 +33,11 @@ jobs:
           command: echo ${CIRCLE_BRANCH}
       - run:
           name: Installing AWS CLI
-          working_directoty: /
+          working_directory: /
           command: |
             sudo apt-get -y -qq update
-            sudo-apt-get install -y awscli
-            sudo-apt-get install -y python-pip python-dev build-essential
+            sudo apt-get install -y awscli
+            sudo apt-get install -y python-pip python-dev build-essential
       - run:
           name: Build Project
           command: |
@@ -47,12 +47,12 @@ jobs:
             zip ../build.zip -r * .[^.]*
             echo "Build successful"
       - run:
-          name: Deploy to AWS s3
+          name: Deploy to AWS S3
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master"]
+            if [ "${CIRCLE_BRANCH}" == "master" ]
             then
               aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_PRODUCTION} --delete
-            elif [ "${CIRCLE_BRANCH}" == "staging"]
+            elif [ "${CIRCLE_BRANCH}" == "staging" ]
             then
               aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_BUCKET_STAGING} --delete
             else
