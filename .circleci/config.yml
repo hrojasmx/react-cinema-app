@@ -42,6 +42,52 @@ aliases:
         zip ../build.zip -r * .[^.]*
         echo "Build successful"
 
+<<<<<<< HEAD
+=======
+executor:
+    app-executor:
+      docker:
+        - image: circleci/node:12.16.1
+    working_directory: ~/repo
+
+    aliases:
+      - &show-current-branch-name
+        - run:
+          name: Show current branch
+          command: echo ${CIRCLE_BRANCH}
+      - &restore-cache # Restores the cached dependency.
+        restore-cache:
+          keys:
+            - app-{{ checksum "package.json" }}
+            - app-
+      - &install-dependencies
+        run:
+          name: Install dependencies
+          command: npm install
+      - &save-cache
+        save_cache:
+          paths:
+            - node_modules
+          key: app-{{ checksum "package.json" }}
+      - &install-aws-cli
+        run:
+          name: Installing AWS CLI
+          working_directory: /
+          command: |
+            sudo apt-get -y -qq update
+            sudo apt-get install -y awscli
+            sudo apt-get install -y python-pip python-dev build-essential
+      - &build-project
+        run:
+          name: Build Project
+          command: |
+            npm install
+            npm run build
+            cd build
+            zip ../build.zip -r * .[^.]*
+            echo "Build successful"
+
+>>>>>>> c073cf3c6dc64e23265dd0a72607081152fb8580
 jobs:
   build:
     executor: app-executor
@@ -52,6 +98,7 @@ jobs:
       - *install-dependencies
       - *save-cache
 
+<<<<<<< HEAD
   linting:
     executor: app-executor
     steps:
@@ -62,6 +109,8 @@ jobs:
           name: Run Linting
           command: npm run lint
 
+=======
+>>>>>>> c073cf3c6dc64e23265dd0a72607081152fb8580
   deploy-to-aws-s3:
     executor: app-executor
     steps:
