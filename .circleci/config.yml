@@ -41,53 +41,6 @@ aliases:
         cd build
         zip ../build.zip -r * .[^.]*
         echo "Build successful"
-
-<<<<<<< HEAD
-=======
-executor:
-    app-executor:
-      docker:
-        - image: circleci/node:12.16.1
-    working_directory: ~/repo
-
-    aliases:
-      - &show-current-branch-name
-        - run:
-          name: Show current branch
-          command: echo ${CIRCLE_BRANCH}
-      - &restore-cache # Restores the cached dependency.
-        restore-cache:
-          keys:
-            - app-{{ checksum "package.json" }}
-            - app-
-      - &install-dependencies
-        run:
-          name: Install dependencies
-          command: npm install
-      - &save-cache
-        save_cache:
-          paths:
-            - node_modules
-          key: app-{{ checksum "package.json" }}
-      - &install-aws-cli
-        run:
-          name: Installing AWS CLI
-          working_directory: /
-          command: |
-            sudo apt-get -y -qq update
-            sudo apt-get install -y awscli
-            sudo apt-get install -y python-pip python-dev build-essential
-      - &build-project
-        run:
-          name: Build Project
-          command: |
-            npm install
-            npm run build
-            cd build
-            zip ../build.zip -r * .[^.]*
-            echo "Build successful"
-
->>>>>>> c073cf3c6dc64e23265dd0a72607081152fb8580
 jobs:
   build:
     executor: app-executor
@@ -98,7 +51,6 @@ jobs:
       - *install-dependencies
       - *save-cache
 
-<<<<<<< HEAD
   linting:
     executor: app-executor
     steps:
@@ -106,11 +58,9 @@ jobs:
       - *show-current-branch-name
       - *restore-cache
       - run:
-          name: Run Linting
+          name: Run linting
           command: npm run lint
 
-=======
->>>>>>> c073cf3c6dc64e23265dd0a72607081152fb8580
   deploy-to-aws-s3:
     executor: app-executor
     steps:
@@ -130,7 +80,6 @@ jobs:
             else
               aws --region ${AWS_REGION} s3 sync ~/repo/build s3://${AWS_DEV_BUCKET} --delete
             fi
-
   deploy-to-aws-cloudfront:
     executor: app-executor
     steps:
@@ -142,17 +91,15 @@ jobs:
           name: Deploy to AWS Cloudfront
           command: |
             aws configure set preview.cloudfront true
-            aws configure set preview.create-invalidation true
-            if [ "${CIRCLE_BRANCH}" == "master" ];
+            if [ "${CIRCLE_BRANCH}" == "master" ]
             then
               aws cloudfront create-invalidation --distribution-id ${PRODUCTION_DISTRIBUTION_ID} --paths /\*
-            elif [ "${CIRCLE_BRANCH}" == "staging" ];
+            elif [ "${CIRCLE_BRANCH}" == "staging" ]
             then
               aws cloudfront create-invalidation --distribution-id ${STAGING_DISTRIBUTION_ID} --paths /\*
             else
               aws cloudfront create-invalidation --distribution-id ${DEV_DISTRIBUTION_ID} --paths /\*
             fi
-
 workflows:
   build_and_deploy:
     jobs:
