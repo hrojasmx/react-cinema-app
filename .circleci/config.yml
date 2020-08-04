@@ -148,7 +148,7 @@ workflows:
               only:
                 - develop
                 - staging
-                - master                -
+                - master
       - deploy-to-aws-s3:
           requires:
             - prettier
